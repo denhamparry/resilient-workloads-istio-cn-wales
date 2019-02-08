@@ -1,0 +1,4 @@
+17c17
+<         fixedDelay: 7s
+---
+>         fixedDelay: 2s
