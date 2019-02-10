@@ -4,13 +4,14 @@ source 00-common.sh
 
 set -x
 
-#yq d -i istio-$ISTIO_VERSION/install/kubernetes/helm/istio/requirements.yaml 'dependencies[15]' # remove istio-cni in >=snapshot.3
-#$HELM repo add istio.io https://storage.googleapis.com/istio-release/releases/$ISTIO_VERSION/charts
-#$HELM dep update istio-$ISTIO_VERSION/install/kubernetes/helm/istio
+yq d -i istio-$ISTIO_VERSION/install/kubernetes/helm/istio/requirements.yaml 'dependencies[15]' # remove istio-cni in >=snapshot.3
+$HELM repo add istio.io https://storage.googleapis.com/istio-release/releases/$ISTIO_VERSION/charts
+$HELM dep update istio-$ISTIO_VERSION/install/kubernetes/helm/istio
 
 for i in istio-$ISTIO_VERSION/install/kubernetes/helm/istio-init/files/crd*yaml; do kubectl apply -f $i; done
+echo 1
 cat istio-$ISTIO_VERSION/install/kubernetes/namespace.yaml > istio-$ISTIO_VERSION.yaml
-
+echo 2
 $HELM template \
     istio-$ISTIO_VERSION/install/kubernetes/helm/istio \
     --name istio \
@@ -22,7 +23,7 @@ $HELM template \
     # --set servicegraph.enabled=true \
     # --set global.mTLS.enabled=true \
     # --set kiali.enabled=true \
-
+echo 3
 kubectl apply -f istio-$ISTIO_VERSION.yaml
-
+echo 4
 kubectl label namespace default istio-injection=enabled
